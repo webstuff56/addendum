@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags %}
+
+{% block content %}
+<div class="outer-rail-top"></div>
+
+<div class="max-w-5xl mx-auto">
+
+    <div class="manifesto-box">
+        <nav class="top-nav-lid">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 2rem;">📖</span>
+                <div style="line-height: 1; text-align: left;">
+                    <span style="font-size: 0.7rem; display: block;">The</span>
+                    <span style="font-size: 1.1rem; font-weight: bold; display: block;">Senior</span>
+                    <span style="font-size: 1.1rem; font-weight: bold; display: block;">Addendum</span>
+                </div>
+            </div>
+            
+            <div class="nav-links">
+                <a href="/" class="nav-link active">HOME</a>
+                <a href="#" class="nav-link">ABOUT</a>
+                <a href="#" class="nav-link">THIS</a>
+                <a href="#" class="nav-link">THAT</a>
+            </div>
+        </nav>
+
+        <div class="manifesto-content">
+            <div class="manifesto-text-container">
+                <h1 class="post-title-hide">{{ page.title }}</h1> 
+                <h2 class="text-navy-900" style="font-size: 3rem; margin-top: -20px;">The Story Isn’t Over.</h2>
+                <div class="prose prose-lg mx-auto">
+                    {{ page.body|richtext }}
+                </div>
+            </div>
+            <a href="#" class="bg-forest-green">Start Your Chapter: Create a Poem Today</a>
+        </div>
+    </div>
+
+    <div class="card-zone">
+        <div class="card-item"><h3>THE DAILY SPARK</h3></div>
+        <div class="card-item"><h3>THE WEEKLY BRIEF</h3></div>
+        <div class="card-item"><h3>THE LEGACY GALLERY</h3></div>
+    </div>
+
+    <footer class="bottom-nav">
+        <div style="display: flex; gap: 20px;">
+            <a href="#" style="color: white; text-decoration: none; font-size: 0.8rem;">About Us</a>
+            <a href="#" style="color: white; text-decoration: none; font-size: 0.8rem;">Contact</a>
+            <a href="#" style="color: white; text-decoration: none; font-size: 0.8rem;">Privacy</a>
+        </div>
+        <div style="color: white; font-size: 0.8rem;">Terms | Socials</div>
+    </footer>
+
+</div>
+
+<div class="outer-rail-bottom"></div>
+{% endblock %}

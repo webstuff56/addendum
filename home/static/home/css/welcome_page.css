@@ -1,0 +1,52 @@
+/* --- MOBILE FIRST (Default) --- */
+body {
+    background-color: #e2d7c5; /* The 'gap' color between bars */
+    margin: 0;
+    padding: 0;
+}
+
+.site-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* One column for phones */
+    min-height: 100vh;
+}
+
+.site-header, .site-footer {
+    background-color: #1b263b; /* Deep Navy */
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.manifesto-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 40px 20px; /* Vertical gap between frames */
+}
+
+.accent-bar {
+    background-color: #1b263b; /* The framing bars */
+    height: 12px;
+}
+
+.manifesto-box {
+    background-color: #f4eee0; /* The Tan Box */
+    padding: 40px;
+    color: #000000;
+}
+
+/* --- DESKTOP (The Rectangle Look) --- */
+@media (min-width: 992px) {
+    .manifesto-container {
+        /* Creates: Left Gap | 800px Box | Right Gap */
+        grid-template-columns: 1fr 800px 1fr; 
+    }
+
+    .accent-bar, .manifesto-box {
+        grid-column: 2; /* Forces layers 2, 3, and 4 into the center */
+    }
+
+    .manifesto-box {
+        padding: 80px; /* More breathing room on laptops */
+    }
+}

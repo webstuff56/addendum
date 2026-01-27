@@ -1,0 +1,116 @@
+/* --- 1. THE FOUNDATION --- */
+body {
+    background-color: #DBCFB0 !important; /* Deeper Tan Sea */
+    margin: 0;
+    padding: 0;
+    font-family: 'Georgia', serif;
+}
+
+/* --- 2. THE ANCHOR RAILS (Bars 1 & 4) --- */
+.outer-rail-top, .outer-rail-bottom {
+    width: 100%;
+    height: 20px;
+    background-color: #1b263b;
+}
+.outer-rail-top { margin-bottom: 40px; }
+.outer-rail-bottom { margin-top: 40px; }
+
+/* --- 3. THE MANIFESTO ISLAND (Cream Box with Navy Lid) --- */
+.manifesto-box {
+    background-color: #FFFDF5 !important; /* FORCED LIGHT CREAM */
+    max-width: 1000px;
+    margin: 0 auto;
+    border: 1px solid #1b263b;
+    overflow: hidden; 
+}
+
+.top-nav-lid {
+    background-color: #1b263b;
+    color: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Hide specific Wagtail Post Titles */
+.post-title-hide {
+    color: #1b263b !important;
+    font-size: 1px;
+}
+
+/* Navigation Links */
+.nav-link {
+    color: white;
+    text-decoration: none;
+    padding-bottom: 4px;
+    margin: 0 15px;
+    border-bottom: 3px solid transparent;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+.nav-link.active { border-bottom: 3px solid #ff8c00; }
+
+/* --- 4. THE MANIFESTO CONTENT --- */
+.manifesto-content {
+    padding: 60px 20px;
+    text-align: center;
+}
+.manifesto-text-container {
+    max-width: 700px; /* Orderly sentence length */
+    margin: 0 auto;
+}
+
+/* --- 5. THE FOREST GREEN PILL BUTTON --- */
+.bg-forest-green {
+    background-color: #1B4332 !important;
+    color: #ffffff !important;
+    padding: 18px 50px !important;
+    border-radius: 9999px !important;
+    display: inline-block !important;
+    text-decoration: none !important;
+    font-weight: bold;
+    margin-top: 30px;
+    border: none;
+}
+
+/* --- 6. THE CARD ZONE & TALL TILES --- */
+.card-zone {
+    max-width: 1000px;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.card-item {
+    background-color: #FFFDF5 !important; /* FORCED LIGHT CREAM */
+    border: 1px solid #1b263b;
+    padding: 40px 20px;
+    text-align: center;
+    min-height: 300px; /* TALLER TILES FOR YOUR IMAGES */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Placeholder for your upcoming pictures */
+.card-image-slot {
+    width: 100%;
+    height: 250px;
+    background-color: #f0ede4; /* Slightly darker cream for the image area */
+    border: 1px dashed #1b263b;
+    margin-bottom: 20px;
+}
+
+/* --- 7. BAR #3: BOTTOM NAV --- */
+.bottom-nav {
+    background-color: #1b263b;
+    color: white;
+    padding: 15px;
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+}
