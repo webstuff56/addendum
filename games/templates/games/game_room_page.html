@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load static wagtailcore_tags %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'games/css/lobby.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="outer-rail-top"></div>
 
@@ -35,7 +39,7 @@
             <p>Challenge a neighbor or the computer.</p>
             <button onclick="openModal()" class="join-btn" style="border:none; cursor:pointer; margin-top:10px;">SET TABLE</button>
         </div>
-        </div>
+    </div>
 </div>
 
 <div id="gameModal" class="modal-overlay">
@@ -57,19 +61,9 @@
     </div>
 </div>
 
-<script>
-    function openModal() {
-        document.getElementById("gameModal").style.display = "block";
-    }
-    function closeModal() {
-        document.getElementById("gameModal").style.display = "none";
-    }
-    window.onclick = function(event) {
-        if (event.target == document.getElementById("gameModal")) {
-            closeModal();
-        }
-    }
-</script>
-
 <div class="outer-rail-bottom"></div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'games/js/lobby.js' %}"></script>
 {% endblock %}
