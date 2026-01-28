@@ -1,0 +1,83 @@
+/* --- 1. THE DNA (Global Styles) --- */
+body {
+    background-color: #DBCFB0 !important; 
+    margin: 0; padding: 0;
+    font-family: 'Georgia', serif;
+}
+
+.outer-rail-top, .outer-rail-bottom {
+    width: 100%; height: 20px;
+    background-color: #1b263b;
+}
+
+/* --- 2. THE SHARED ISLANDS (Lid & Box) --- */
+.manifesto-box {
+    background-color: #FFFDF5 !important;
+    max-width: 1000px; margin: 0 auto;
+    border: 1px solid #1b263b; overflow: hidden; 
+}
+
+.top-nav-lid {
+    background-color: #1b263b; color: white;
+    padding: 20px 30px; display: flex;
+    justify-content: space-between; align-items: center;
+}
+
+.nav-link {
+    color: white; text-decoration: none;
+    margin: 0 15px; font-size: 0.8rem; font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* --- 3. THE BUTTONS --- */
+.bg-forest-green {
+    background-color: #1B4332 !important; color: white !important;
+    padding: 18px 50px !important; border-radius: 9999px !important;
+    display: inline-block; font-weight: bold; margin-top: 30px;
+}
+
+.join-btn {
+    background-color: #ff8c00; color: #1b263b !important;
+    padding: 8px 20px; border-radius: 4px; font-weight: bold;
+}
+
+/* --- 4. THE GALLERY GRID (Used in Home and Games) --- */
+.card-zone {
+    max-width: 1000px; margin: 40px auto;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+}
+
+.card-item {
+    background-color: #FFFDF5 !important;
+    border: 1px solid #1b263b; padding: 40px 20px; text-align: center;
+    display: flex; flex-direction: column; justify-content: space-between;
+}
+
+.card-image-slot {
+    width: 100%; height: 250px; background: #f0ede4;
+    border: 1px solid #1b263b; margin-bottom: 20px; overflow: hidden;
+}
+
+/* --- 5. THE GATEKEEPER (Tooltip) --- */
+.button-gate { position: relative; display: inline-block; }
+.gate-tooltip {
+    visibility: hidden; width: 260px; background: #1b263b; color: #fff;
+    padding: 12px; position: absolute; bottom: 125%; left: 50%;
+    transform: translateX(-50%); opacity: 0; transition: 0.3s;
+    border: 1px solid #ff8c00; font-size: 0.85rem; z-index: 999;
+}
+.button-gate:hover .gate-tooltip { visibility: visible; opacity: 1; }
+
+/* --- 6. THE MODAL (The Greeter Popup) --- */
+.modal-overlay {
+    display: none; position: fixed; z-index: 2000;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background-color: rgba(27, 38, 59, 0.8);
+}
+.modal-content {
+    background: #FFFDF5; margin: 10% auto; width: 400px;
+    border: 2px solid #1b263b; border-radius: 8px; overflow: hidden;
+}
+.modal-header { background: #1b263b; color: white; padding: 15px; display: flex; justify-content: space-between; }
+.modal-body { padding: 30px; text-align: left; }
+.modal-body select, .modal-body input { width: 100%; padding: 10px; margin: 10px 0 20px; border: 1px solid #1b263b; }

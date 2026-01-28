@@ -24,6 +24,31 @@ body {
     overflow: hidden; 
 }
 
+/* MEMBER NAVIGATION BUTTONS */
+.sign-in-btn {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 5px 15px !important;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.join-btn {
+    background-color: #ff8c00; /* Matching your Orange/Gold active color */
+    color: #1b263b !important;
+    padding: 5px 20px !important;
+    border-radius: 4px;
+    font-weight: bold;
+    border: none;
+}
+
+.join-btn:hover {
+    background-color: #e67e00;
+}
+
+.sign-in-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
 .top-nav-lid {
     background-color: #1b263b;
     color: white;
@@ -89,19 +114,28 @@ body {
     border: 1px solid #1b263b;
     padding: 40px 20px;
     text-align: center;
-    min-height: 300px; /* TALLER TILES FOR YOUR IMAGES */
+    min-height: 450px; 
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
-/* Placeholder for your upcoming pictures */
+/* The frame for your glossy images */
 .card-image-slot {
     width: 100%;
     height: 250px;
-    background-color: #f0ede4; /* Slightly darker cream for the image area */
-    border: 1px dashed #1b263b;
+    background-color: #f0ede4; 
+    border: 1px solid #1b263b; 
     margin-bottom: 20px;
+    overflow: hidden; 
+}
+
+/* THE SECRET SAUCE */
+.card-image-slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    display: block;
 }
 
 /* --- 7. BAR #3: BOTTOM NAV --- */
@@ -113,4 +147,50 @@ body {
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
+}
+
+/* --- 8. THE GAME ROOM GATEKEEPER (TOOLTIPS) --- */
+.button-gate {
+    position: relative;
+    display: inline-block;
+}
+
+.gate-tooltip {
+    visibility: hidden; /* This hides the text initially */
+    width: 260px;
+    background-color: #1b263b; 
+    color: #ffffff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 12px;
+    position: absolute;
+    z-index: 999; /* Ensure it stays on top */
+    bottom: 125%; 
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    border: 1px solid #ff8c00; 
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+    pointer-events: none; /* Prevents the tooltip from flickering */
+}
+
+/* The arrow */
+.gate-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #1b263b transparent transparent transparent;
+}
+
+/* The Hover Effect */
+.button-gate:hover .gate-tooltip {
+    visibility: visible;
+    opacity: 1;
 }

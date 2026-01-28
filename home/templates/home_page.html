@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags %}
+{% load static wagtailcore_tags wagtailimages_tags %}
 
 {% block content %}
 <div class="outer-rail-top"></div>
@@ -20,8 +20,8 @@
             <div class="nav-links">
                 <a href="/" class="nav-link active">HOME</a>
                 <a href="#" class="nav-link">ABOUT</a>
-                <a href="#" class="nav-link">THIS</a>
-                <a href="#" class="nav-link">THAT</a>
+                <a href="#" class="nav-link sign-in-btn">SIGN IN</a>
+                <a href="#" class="nav-link join-btn">JOIN</a>
             </div>
         </nav>
 
@@ -33,14 +33,55 @@
                     {{ page.body|richtext }}
                 </div>
             </div>
-            <a href="#" class="bg-forest-green">Start Your Chapter: Create a Poem Today</a>
+            
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 30px;">
+                
+                <div class="button-gate">
+                    <a href="#" class="bg-forest-green">Start Your Chapter: Create a Poem</a>
+                    <span class="gate-tooltip">Must register as a free member before creating. Click the JOIN button above!</span>
+                </div>
+
+                <div class="button-gate">
+                    <a href="/game-room/" class="bg-forest-green" style="background-color: #2D6A4F !important;">Enter the Game Room: Scrabble & Puzzles</a>
+                    <span class="gate-tooltip">Must register as a free member before entering. Click the JOIN button above!</span>
+                </div>
+
+            </div>
         </div>
     </div>
 
     <div class="card-zone">
-        <div class="card-item"><h3>THE DAILY SPARK</h3></div>
-        <div class="card-item"><h3>THE WEEKLY BRIEF</h3></div>
-        <div class="card-item"><h3>THE LEGACY GALLERY</h3></div>
+        
+        <div class="card-item">
+            <h3>{{ page.hero_tile_header }}</h3>
+            <div class="card-image-slot">
+                {% if page.hero_tile_image %}
+                    {% image page.hero_tile_image fill-600x400 %}
+                {% endif %}
+            </div>
+            <p style="font-size: 0.9rem; color: #1b263b;">{{ page.hero_tile_text }}</p>
+        </div>
+
+        <div class="card-item">
+            <h3>{{ page.tech_tile_header }}</h3>
+            <div class="card-image-slot">
+                {% if page.tech_tile_image %}
+                    {% image page.tech_tile_image fill-600x400 %}
+                {% endif %}
+            </div>
+            <p style="font-size: 0.9rem; color: #1b263b;">{{ page.tech_tile_text }}</p>
+        </div>
+
+        <div class="card-item">
+            <h3>{{ page.health_tile_header }}</h3>
+            <div class="card-image-slot">
+                {% if page.health_tile_image %}
+                    {% image page.health_tile_image fill-600x400 %}
+                {% endif %}
+            </div>
+            <p style="font-size: 0.9rem; color: #1b263b;">{{ page.health_tile_text }}</p>
+        </div>
+
     </div>
 
     <footer class="bottom-nav">
