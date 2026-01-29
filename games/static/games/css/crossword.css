@@ -1,34 +1,61 @@
-/* This turns your <a> link into a solid, clickable brick */
-.game-brick {
-    display: flex !important; 
-    align-items: center;
-    min-height: 50px; 
-    padding: 0 20px;
-    margin-bottom: 15px;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    text-decoration: none !important;
-    color: #1b263b !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    cursor: pointer;
+/* ADDENDUM
+   DATE: January 29, 2026
+   TIME: 2:40 PM
+   CHANGES: Added left margin to grid; nudged sidebar padding; 
+            maintained responsive scaling and layout.
+*/
+
+* { box-sizing: border-box; }
+
+#grid-container {
+    display: grid !important;
+    grid-template-columns: repeat(15, 1fr);
+    width: 100%;
+    max-width: 800px; 
+    background-color: #333;
+    gap: 1px;
+    border: 3px solid #333;
+    margin-left: 20px; /* Nudges the grid away from the left edge */
 }
 
-/* Internal layout for the icon and text */
-.brick-icon { 
-    margin-right: 15px; 
-    font-size: 1.2rem; 
+.cell {
+    background-color: #fff;
+    aspect-ratio: 1 / 1 !important;
+    position: relative;
+    display: flex;
 }
 
-.brick-name { 
-    flex-grow: 1; 
-    font-weight: bold; 
-    font-size: 1.1rem;
+.cell-number {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    font-size: calc(0.4rem + 0.3vw);
+    color: #444;
+    font-weight: bold;
+    line-height: 1;
+    pointer-events: none;
 }
 
-.brick-action { 
-    font-size: 0.8rem; 
-    color: #2D6A4F; 
+.cell input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    text-align: center;
+    font-size: calc(1rem + 0.5vw);
     font-weight: bold;
     text-transform: uppercase;
+    background: transparent;
+    outline: none;
+    padding-top: 15%; /* Keeps the letter below the number */
+}
+
+.black-square {
+    background-color: #000 !important;
+}
+
+.clues-sidebar {
+    height: auto;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding-left: 15px; /* Ensures clues aren't touching the grid edge */
 }

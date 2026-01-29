@@ -1,28 +1,40 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% comment %}
+ADDENDUM
+DATE: January 29, 2026
+TIME: 11:30 AM
+CHANGES: Forced twin-column layout using flex: 1; removed width percentages.
+{% endcomment %}
+
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'games/css/crossword.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto py-8">
-    <h1 class="text-3xl font-bold mb-4">The Daily Spark</h1>
+<div class="max-w-7xl mx-auto py-8 px-4">
+    <h1 class="text-3xl font-bold mb-6">The Daily Spark</h1>
     
-    <div class="game-container" style="display: flex; gap: 20px;">
-        <div id="crossword-grid" style="flex: 2; background: #eee; min-height: 400px; border: 2px solid #333;">
-            <p style="padding: 20px;">Grid Loading...</p>
-        </div>
-
-        <div class="clues-sidebar" style="flex: 1; background: #f9f9f9; padding: 15px; border-left: 4px solid #ff8c00;">
-            <h3 class="font-bold border-bottom mb-2">Hints</h3>
-            <div class="clue-section">
-                <h4 class="font-bold">Across</h4>
-                <ul id="across-clues" class="list-none p-0 text-sm">
-                    <li>1. First letter (1)</li>
-                </ul>
+    <div style="display: flex; flex-direction: row; gap: 40px; align-items: flex-start;">
+        
+        <div style="flex: 1; min-width: 0;">
+            <div id="grid-container">
+                <p style="padding: 20px;">Grid Building...</p>
             </div>
         </div>
+
+        <div class="clues-sidebar" style="flex: 1; min-width: 0; background: #fdfdfd; padding: 25px; border-left: 5px solid #008000; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <h3 class="font-bold text-2xl mb-4" style="border-bottom: 2px solid #eee; padding-bottom: 10px;">Hints</h3>
+            <div class="clue-section">
+                <h4 class="font-bold text-lg mb-2" style="color: #008000;">Across</h4>
+                <ul id="across-clues" class="list-none p-0 text-md space-y-3">
+                    </ul>
+            </div>
+        </div>
+
     </div>
 </div>
+
+<script src="{% static 'games/js/crossword.js' %}"></script>
 {% endblock %}
