@@ -1,0 +1,34 @@
+/* This turns your <a> link into a solid, clickable brick */
+.game-brick {
+    display: flex !important; 
+    align-items: center;
+    min-height: 50px; 
+    padding: 0 20px;
+    margin-bottom: 15px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-decoration: none !important;
+    color: #1b263b !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+/* Internal layout for the icon and text */
+.brick-icon { 
+    margin-right: 15px; 
+    font-size: 1.2rem; 
+}
+
+.brick-name { 
+    flex-grow: 1; 
+    font-weight: bold; 
+    font-size: 1.1rem;
+}
+
+.brick-action { 
+    font-size: 0.8rem; 
+    color: #2D6A4F; 
+    font-weight: bold;
+    text-transform: uppercase;
+}

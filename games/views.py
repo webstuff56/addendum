@@ -1,3 +1,4 @@
 from django.shortcuts import render
 
-# Create your views here.
+def crossword_view(request):
+    return render(request, 'games/crossword_game.html')

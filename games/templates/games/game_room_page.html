@@ -3,6 +3,7 @@
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'games/css/lobby.css' %}">
+    <link rel="stylesheet" href="{% static 'games/css/crossword.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -21,49 +22,50 @@
         </nav>
 
         <div class="manifesto-content">
-            <div class="manifesto-text-container">
-                <h2 style="font-size: 2.5rem; color: #1b263b;">Clubhouse Status</h2>
-                <div style="background: #f0ede4; padding: 20px; border: 1px solid #1b263b; border-radius: 4px;">
-                    <p style="font-style: italic;">{{ page.intro_text|default:"The tables are open. Start a game to invite a neighbor!" }}</p>
-                </div>
-            </div>
+            <h2 class="status-title">Clubhouse Status</h2>
+            <table class="status-matrix">
+                <thead>
+                    <tr>
+                        <th>GAME</th>
+                        <th>STATUS</th>
+                        <th>NAMES AT THE TABLE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Scrabble</td>
+                        <td class="status-open">Open (1/2)</td>
+                        <td>Evelyn</td>
+                    </tr>
+                    <tr>
+                        <td>Crossword</td>
+                        <td class="status-open">Open (1/2)</td>
+                        <td>Arthur</td>
+                    </tr>
+                    <tr>
+                        <td>Scrabble</td>
+                        <td>Occupied</td>
+                        <td>Arthur, Martha</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="card-zone" style="margin-top: 40px;">
-        <div class="card-item">
-            <h3>Scrabble</h3>
-            <div class="card-image-slot">
-                 <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#e2e8f0; font-size:3rem;">A₁</div>
-            </div>
-            <p>Challenge a neighbor or the computer.</p>
-            <button onclick="openModal()" class="join-btn" style="border:none; cursor:pointer; margin-top:10px;">SET TABLE</button>
+    <div class="card-zone">
+        <div class="game-brick" onclick="openModal('Scrabble')">
+            <span class="brick-icon">A₁</span>
+            <span class="brick-name">Scrabble</span>
+            <span class="brick-action">Set Table</span>
         </div>
-    </div>
-</div>
 
-<div id="gameModal" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Set Your Table: Scrabble</h3>
-            <span class="close-modal" onclick="closeModal()">&times;</span>
-        </div>
-        <div class="modal-body">
-            <form id="gameSetupForm">
-                <label>Who are you playing?</label>
-                <select id="opponentSelect">
-                    <option value="computer">The Computer (AI)</option>
-                    <option value="neighbor">A Neighbor (Open Table)</option>
-                </select>
-                <button type="button" class="join-btn" style="width:100%; margin-top:20px;">START GAME</button>
-            </form>
-        </div>
+        <a href="/games/crossword/" class="game-brick" style="text-decoration: none; color: inherit;">
+            <span class="brick-icon">✎</span>
+            <span class="brick-name">Crossword</span>
+            <span class="brick-action">Play Solo</span>
+        </a>
     </div>
 </div>
 
 <div class="outer-rail-bottom"></div>
-{% endblock %}
-
-{% block extra_js %}
-    <script src="{% static 'games/js/lobby.js' %}"></script>
 {% endblock %}

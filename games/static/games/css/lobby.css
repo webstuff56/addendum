@@ -1,0 +1,81 @@
+/* 1. Manifesto Box - The "Cream" Container */
+.manifesto-box {
+    background-color: #fdf5e6;
+    border: 2px solid #1b263b; /* Navy border */
+    max-width: 950px;
+    margin: 20px auto;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.manifesto-content {
+    padding: 15px 20px;
+}
+
+.status-title {
+    color: #1b263b;
+    margin: 0 0 10px 0;
+    font-size: 1.8rem;
+}
+
+/* 2. The 3-Column Matrix (Game, Status, Names) */
+.status-matrix {
+    width: 100%;
+    border-collapse: collapse;
+    background: #f0ede4;
+}
+
+.status-matrix thead {
+    background: #1b263b;
+    color: white;
+    text-align: left;
+}
+
+.status-matrix th, 
+.status-matrix td {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.status-open {
+    font-weight: bold;
+    color: #ff8c00; /* Community Orange */
+}
+
+/* 3. The Game Tiles - Side-by-Side "Half Size" */
+.card-zone {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.card-item {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 15px;
+    flex: 0 1 350px; /* This is the specific rule that keeps them half-size */
+    text-align: center;
+}
+
+.card-image-slot {
+    width: 100%;
+    height: 120px;
+    background: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.join-btn {
+    background: #2D6A4F; /* Forest Green */
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+}
