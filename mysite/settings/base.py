@@ -11,6 +11,7 @@ INSTALLED_APPS = [
     "search",
     "members",
     "games",
+    "studio",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",

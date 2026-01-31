@@ -2,39 +2,54 @@
 {% load static %}
 
 {% comment %}
-ADDENDUM
-DATE: January 29, 2026
-TIME: 11:30 AM
-CHANGES: Forced twin-column layout using flex: 1; removed width percentages.
+SYNC INFO:
+FILE: C:\addendum\games\templates\games\crossword_game.html
+DATE: January 30, 2026
+TIME: 7:25 PM
+REASON: Resolved 'extra_css' block duplication error. Merged static 
+        links into a single block and finalized responsive layout hooks.
 {% endcomment %}
 
 {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'games/css/lobby.css' %}">
     <link rel="stylesheet" href="{% static 'games/css/crossword.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto py-8 px-4">
-    <h1 class="text-3xl font-bold mb-6">The Daily Spark</h1>
+<a href="/game-room/" style="display: block; text-decoration: none;">
+    <div class="emerald-bar"></div>
+</a>
+
+<div class="max-w-7xl mx-auto py-4 px-4">
+    <div class="lobby-header">
+        <h1 class="text-3xl font-bold mb-6" style="font-family: 'Georgia', serif; color: #1b263b;">The Daily Spark</h1>
+    </div>
     
-    <div style="display: flex; flex-direction: row; gap: 40px; align-items: flex-start;">
+    <div class="game-container">
         
-        <div style="flex: 1; min-width: 0;">
-            <div id="grid-container">
-                <p style="padding: 20px;">Grid Building...</p>
-            </div>
+        <div id="grid-container">
+            <p style="padding: 20px; color: white; text-align: center;">Polishing the Emeralds...</p>
         </div>
 
-        <div class="clues-sidebar" style="flex: 1; min-width: 0; background: #fdfdfd; padding: 25px; border-left: 5px solid #008000; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-            <h3 class="font-bold text-2xl mb-4" style="border-bottom: 2px solid #eee; padding-bottom: 10px;">Hints</h3>
-            <div class="clue-section">
-                <h4 class="font-bold text-lg mb-2" style="color: #008000;">Across</h4>
-                <ul id="across-clues" class="list-none p-0 text-md space-y-3">
+        <div class="clues-sidebar">
+            <div class="clue-column">
+                <h3>Across</h3>
+                <ul id="across-clues">
+                    </ul>
+            </div>
+            <div class="clue-column">
+                <h3>Down</h3>
+                <ul id="down-clues">
                     </ul>
             </div>
         </div>
 
     </div>
 </div>
+
+<a href="/game-room/" style="display: block; text-decoration: none;">
+    <div class="emerald-bar"></div>
+</a>
 
 <script src="{% static 'games/js/crossword.js' %}"></script>
 {% endblock %}

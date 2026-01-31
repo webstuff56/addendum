@@ -1,7 +1,13 @@
+/* C:\addendum\games\static\games\css\lobby.css 
+   DATE: January 30, 2026
+   TIME: 4:10 PM
+   SYNC: Full replacement. Independent font control for Crosswords and Scrabble.
+*/
+
 /* 1. Manifesto Box - The "Cream" Container */
 .manifesto-box {
     background-color: #fdf5e6;
-    border: 2px solid #1b263b; /* Navy border */
+    border: 2px solid #1b263b;
     max-width: 950px;
     margin: 20px auto;
     border-radius: 8px;
@@ -39,43 +45,98 @@
 
 .status-open {
     font-weight: bold;
-    color: #ff8c00; /* Community Orange */
+    color: #ff8c00; 
 }
 
-/* 3. The Game Tiles - Side-by-Side "Half Size" */
+/* 3. EMERALD BRICKS - CSS Grid Zone */
 .card-zone {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 30px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 50px;
+    margin-top: 40px;
+    justify-items: center;
 }
 
-.card-item {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    padding: 15px;
-    flex: 0 1 350px; /* This is the specific rule that keeps them half-size */
-    text-align: center;
+@media (min-width: 768px) {
+    .card-zone {
+        grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    }
 }
 
-.card-image-slot {
-    width: 100%;
-    height: 120px;
-    background: #e2e8f0;
+/* THE FACETED EMERALD BRICK BASE */
+.game-brick {
+    position: relative;
+    width: 420px;
+    height: 180px;
+    text-decoration: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2.5rem;
-    margin-bottom: 10px;
+    
+    /* OUTER BEVELS: Hard-stop gradients create the "steps" */
+    background: 
+        linear-gradient(135deg, #40916c 10%, #1b4332 10.5%, #1b4332 89.5%, #081c15 90%),
+        linear-gradient(45deg, #2d6a4f 10%, #1b4332 10.5%, #1b4332 89.5%, #081c15 90%);
+    background-blend-mode: overlay;
+    background-color: #1b4332;
+
+    clip-path: polygon(8% 0%, 92% 0%, 100% 15%, 100% 85%, 92% 100%, 8% 100%, 0% 85%, 0% 15%);
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
 }
 
-.join-btn {
-    background: #2D6A4F; /* Forest Green */
-    color: white;
-    border: none;
-    padding: 8px 20px;
-    cursor: pointer;
-    border-radius: 4px;
+/* THE TOP FACE (The "Table") */
+.game-brick::after {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 8%;
+    right: 8%;
+    bottom: 15%;
+    background: #2d6a4f;
+    border: 4px solid #1b4332;
+    clip-path: polygon(4% 0%, 96% 0%, 100% 12%, 100% 88%, 96% 100%, 4% 100%, 0% 88%, 0% 12%);
+    z-index: 1;
+}
+
+.brick-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+/* INDEPENDENT FONT PROPERTIES */
+.name-crosswords {
+    font-weight: 900;
+    font-size: 2.4rem; /* Tighter for the longer word */
+    color: #ffffff;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-family: 'Georgia', serif;
+    text-shadow: 2px 2px 0px #081c15; 
+}
+
+.name-scrabble {
+    font-weight: 900;
+    font-size: 2.5rem; /* Bolder for the shorter word */
+    color: #ffffff;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    font-family: 'Georgia', serif;
+    text-shadow: 2px 2px 0px #081c15; 
+}
+
+.game-brick:hover {
+    transform: translateY(-5px);
+    filter: brightness(1.1);
+}
+
+/* 4. EMERALD BARS - Branding Rails */
+.emerald-bar {
+    display: block;
+    height: 12px;
+    background: linear-gradient(to right, #081c15, #50C878, #081c15);
+    width: 100%;
+    margin: 30px 0;
+    border-radius: 2px;
 }

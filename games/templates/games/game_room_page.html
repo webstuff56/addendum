@@ -1,20 +1,33 @@
 {% extends "base.html" %}
 {% load static wagtailcore_tags %}
 
+{% comment %}
+SYNC INFO:
+FILE: C:\addendum\games\templates\games\game_room_page.html
+DATE: January 30, 2026
+TIME: 4:15 PM
+REASON: Restored game names by syncing HTML span classes with the 
+        new independent CSS properties (name-scrabble and name-crosswords).
+{% endcomment %}
+
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'games/css/lobby.css' %}">
     <link rel="stylesheet" href="{% static 'games/css/crossword.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="outer-rail-top"></div>
+<div class="outer-rail-top">
+    <a href="/game-room/" style="display: block; text-decoration: none;">
+        <div class="emerald-bar"></div>
+    </a>
+</div>
 
 <div class="max-w-5xl mx-auto">
     <div class="manifesto-box">
         <nav class="top-nav-lid">
             <div class="nav-links">
                 <a href="/" class="nav-link">HOME</a>
-                <a href="#" class="nav-link active">THE LOBBY</a>
+                <a href="/game-room/" class="nav-link active">THE LOBBY</a>
             </div>
             <div class="nav-links">
                 <span class="nav-link" style="color: #ff8c00;">COMMUNITY CENTER</span>
@@ -38,7 +51,9 @@
                         <td>Evelyn</td>
                     </tr>
                     <tr>
-                        <td>Crossword</td>
+                        <td>
+                            <a href="{% url 'games:crossword' %}" style="color: inherit; text-decoration: underline;">Crossword</a>
+                        </td>
                         <td class="status-open">Open (1/2)</td>
                         <td>Arthur</td>
                     </tr>
@@ -53,19 +68,23 @@
     </div>
 
     <div class="card-zone">
-        <div class="game-brick" onclick="openModal('Scrabble')">
-            <span class="brick-icon">A₁</span>
-            <span class="brick-name">Scrabble</span>
-            <span class="brick-action">Set Table</span>
+        <div class="game-brick" onclick="openModal('Scrabble')" style="cursor: pointer;">
+            <div class="brick-content">
+                <span class="name-scrabble">Scrabble</span>
+            </div>
         </div>
 
-        <a href="/games/crossword/" class="game-brick" style="text-decoration: none; color: inherit;">
-            <span class="brick-icon">✎</span>
-            <span class="brick-name">Crossword</span>
-            <span class="brick-action">Play Solo</span>
+        <a href="{% url 'games:crossword' %}" class="game-brick" style="text-decoration: none;">
+            <div class="brick-content">
+                <span class="name-crosswords">Crosswords</span>
+            </div>
         </a>
     </div>
 </div>
 
-<div class="outer-rail-bottom"></div>
+<div class="outer-rail-bottom">
+    <a href="/game-room/" style="display: block; text-decoration: none;">
+        <div class="emerald-bar"></div>
+    </a>
+</div>
 {% endblock %}

@@ -1,0 +1,17 @@
+/* FILE: studio/static/studio/css/studio.css */
+/* SYNC: 2026-01-31 11:45 AM */
+/* REASON: Externalizing Konva container styling for the Studio sandbox. */
+/* ------------------------------------------------------------------------------- */
+
+#konva-holder {
+    background-color: #f0f0f0;
+    border: 2px solid #006b54;
+    margin: 20px auto;
+    width: 800px;  /* Matches the Konva Stage width */
+    height: 600px; /* Matches the Konva Stage height */
+    display: block;
+}
+
+.studio-header {
+    margin-bottom: 2rem;
+}
