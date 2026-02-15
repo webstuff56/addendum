@@ -1,0 +1,140 @@
+/* FILE: studio/static/studio/js/scrabble/scrabble_painter.js */
+/* DATE: 2026-02-13 12:45 PM */
+/* SYNC: Fixed syntax error (missing closing brace). Restored raw blocks. Alice buttons flipped 180. Score text uses \n for wrapping. */
+
+function paintBoard(layer) {
+    const rackHeight = 40;
+    const rackWidth = 40;
+    const buttonWidth = 70;
+    const buttonHeight = 30;
+    const spacing = 80;
+    const labels = ['SUBMIT', 'UNDO', 'EXCHANGE', 'PASS'];
+    const colors = ['#4CAF50', '#cc0000', '#FF9800', '#9C27B0'];
+
+    const players = [
+        { name: 'Alice', turn: 23, total: 145 },
+        { name: 'David', turn: 15, total: 234 },
+        { name: 'Carlos', turn: 8, total: 89 },
+        { name: 'Emma', turn: 31, total: 287 }
+    ];
+
+    /**
+     * DYNAMIC NAME BOX ONLY
+     * Measures name and draws a box to fit.
+     */
+    function createNameBox(x, y, name, rotation, font) {
+        const group = new Konva.Group({ x: x, y: y });
+        const textObj = new Konva.Text({
+            text: name,
+            fontSize: 16,
+            fontFamily: font,
+            fill: 'black',
+            padding: 10,
+            align: 'center',
+            verticalAlign: 'middle'
+        });
+
+        const w = textObj.width();
+        const h = textObj.height();
+
+        const rect = new Konva.Rect({
+            width: w, height: h,
+            fill: 'white', stroke: 'black', strokeWidth: 2, cornerRadius: 3
+        });
+
+        if (rotation === 90) {
+            textObj.x(h); textObj.rotation(90);
+            rect.width(h); rect.height(w);
+        } else if (rotation === 180) {
+            textObj.x(w); textObj.y(h); textObj.rotation(180);
+        } else if (rotation === 270) {
+            textObj.y(w); textObj.rotation(270);
+            rect.width(h); rect.height(w);
+        }
+
+        group.add(rect);
+        group.add(textObj);
+        return group;
+    }
+
+    // ========== TOP RACK, CONTROLS & SCOREBOARD ==========
+    layer.add(new Konva.Rect({ x: 200, y: 52, width: 400, height: rackHeight, fill: CONFIG.COLORS.RACK_WOOD, stroke: CONFIG.COLORS.RACK_STROKE, strokeWidth: 4, cornerRadius: 5 }));
+
+    const topControlGroup = new Konva.Group({ x: 580, y: 40, rotation: 180 });
+    for (let i = 0; i < 4; i++) {
+        const btn = new Konva.Group({ x: i * 80, y: 0 });
+        btn.add(new Konva.Rect({ width: buttonWidth, height: buttonHeight, fill: colors[i], cornerRadius: 5 }));
+        btn.add(new Konva.Text({ text: labels[i], fontSize: 11, fill: 'white', width: buttonWidth, padding: 8, align: 'center' }));
+        topControlGroup.add(btn);
+    }
+    layer.add(topControlGroup);
+
+    layer.add(createNameBox(608, 52, players[0].name, 180, 'Playwrite IN Guides'));
+    
+    const topScoreBox = new Konva.Group({ x: 98, y: 52 });
+    topScoreBox.add(new Konva.Rect({ width: 94, height: 40, fill: 'white', stroke: CONFIG.COLORS.RACK_STROKE, strokeWidth: 2 }));
+    topScoreBox.add(new Konva.Text({ text: `Turn: ${players[0].turn}\nTotal: ${players[0].total}`, fontSize: 16, fill: 'black', fontFamily: 'Open Sans', width: 94, height: 40, align: 'center', verticalAlign: 'middle', rotation: 180, x: 94, y: 40, offsetX: 47, offsetY: 20 }));
+    layer.add(topScoreBox);
+
+    // ========== BOTTOM RACK, CONTROLS & SCOREBOARD ==========
+    layer.add(new Konva.Rect({ x: 200, y: 708, width: 400, height: rackHeight, fill: CONFIG.COLORS.RACK_WOOD, stroke: CONFIG.COLORS.RACK_STROKE, strokeWidth: 4, cornerRadius: 5 }));
+    for (let i = 0; i < 4; i++) {
+        const btn = new Konva.Group({ x: 260 + (i * 80), y: 756 });
+        btn.add(new Konva.Rect({ width: buttonWidth, height: buttonHeight, fill: colors[i], cornerRadius: 5 }));
+        btn.add(new Konva.Text({ text: labels[i], fontSize: 11, fill: 'white', width: buttonWidth, padding: 10, align: 'center' }));
+        layer.add(btn);
+    }
+    layer.add(createNameBox(98, 708, players[1].name, 0, 'Playwrite IN Guides'));
+    
+    const bottomScoreBox = new Konva.Group({ x: 608, y: 708 });
+    bottomScoreBox.add(new Konva.Rect({ width: 94, height: 40, fill: 'white', stroke: CONFIG.COLORS.RACK_STROKE, strokeWidth: 2 }));
+    bottomScoreBox.add(new Konva.Text({ text: `Turn: ${players[1].turn}\nTotal: ${players[1].total}`, fontSize: 16, fill: 'black', fontFamily: 'Open Sans', width: 94, height: 40, align: 'center', verticalAlign: 'middle' }));
+    layer.add(bottomScoreBox);
+
+    // ========== LEFT RACK, CONTROLS & SCOREBOARD ==========
+    layer.add(new Konva.Rect({ x: 52, y: 200, width: rackWidth, height: 400, fill: CONFIG.COLORS.RACK_WOOD, stroke: CONFIG.COLORS.RACK_STROKE, strokeWidth: 4, cornerRadius: 5 }));
+    for (let i = 0; i < 4; i++) {
+        const btn = new Konva.Group({ x: 12, y: 214 + (i * spacing) });
+        btn.add(new Konva.Rect({ width: 30, height: 70, fill: colors[i], cornerRadius: 5 }));
+        btn.add(new Konva.Text({ text: labels[i], fontSize: 10, fill: 'white', width: 70, height: 30, rotation: 90, x: 30, y: 0, align: 'center', verticalAlign: 'middle' }));
+        layer.add(btn);
+    }
+    layer.add(createNameBox(52, 98, players[2].name, 90, 'Playwrite IN Guides'));
+    
+    const leftScoreBox = new Konva.Group({ x: 52, y: 608 });
+    leftScoreBox.add(new Konva.Rect({ width: 40, height: 94, fill: 'white', stroke: CONFIG.COLORS.RACK_STROKE, strokeWidth: 2 }));
+    leftScoreBox.add(new Konva.Text({ text: `Turn: ${players[2].turn}\nTotal: ${players[2].total}`, fontSize: 16, fill: 'black', fontFamily: 'Open Sans', width: 94, height: 40, align: 'center', verticalAlign: 'middle', rotation: 90, x: 60, y: 50, offsetX: 47, offsetY: -20 }));
+    layer.add(leftScoreBox);
+
+    // ========== RIGHT RACK, CONTROLS & SCOREBOARD ==========
+    layer.add(new Konva.Rect({ x: 708, y: 200, width: rackWidth, height: 400, fill: CONFIG.COLORS.RACK_WOOD, stroke: CONFIG.COLORS.RACK_STROKE, strokeWidth: 4, cornerRadius: 5 }));
+    for (let i = 0; i < 4; i++) {
+        const btn = new Konva.Group({ x: 758, y: 228 + (i * spacing) });
+        btn.add(new Konva.Rect({ width: 30, height: 70, fill: colors[i], cornerRadius: 5 }));
+        btn.add(new Konva.Text({ text: labels[i], fontSize: 10, fill: 'white', width: 70, height: 30, rotation: 270, x: 0, y: 70, align: 'center', verticalAlign: 'middle' }));
+        layer.add(btn);
+    }
+    layer.add(createNameBox(708, 608, players[3].name, 270, 'Playwrite IN Guides'));
+    
+    const rightScoreBox = new Konva.Group({ x: 708, y: 104 });
+    rightScoreBox.add(new Konva.Rect({ width: 40, height: 94, fill: 'white', stroke: CONFIG.COLORS.RACK_STROKE, strokeWidth: 2 }));
+    rightScoreBox.add(new Konva.Text({ text: `Turn: ${players[3].turn}\nTotal: ${players[3].total}`, fontSize: 16, fill: 'black', fontFamily: 'Open Sans', width: 94, height: 40, align: 'center', verticalAlign: 'middle', rotation: 270, x: 20, y: 54, offsetX: 47, offsetY: 20 }));
+    layer.add(rightScoreBox);
+
+    // ========== DRAW 15x15 GRID ==========
+    for (var i = 0; i < CONFIG.BOARD_SIZE; i++) {
+        for (var j = 0; j < CONFIG.BOARD_SIZE; j++) {
+            let x = (i * CONFIG.GRID_SIZE) + CONFIG.BOARD_X_OFFSET;
+            let y = (j * CONFIG.GRID_SIZE) + CONFIG.BOARD_Y_OFFSET;
+            let coord = `${i},${j}`;
+            let bgColor = CONFIG.COLORS.DEFAULT_CELL;
+            let label = "";
+            if (CONFIG.MULTIPLIERS.TW.includes(coord)) { bgColor = CONFIG.COLORS.TW; label = "TW"; }
+            else if (CONFIG.MULTIPLIERS.DW.includes(coord)) { bgColor = CONFIG.COLORS.DW; label = "DW"; }
+            else if (CONFIG.MULTIPLIERS.TL.includes(coord)) { bgColor = CONFIG.COLORS.TL; label = "TL"; }
+            else if (CONFIG.MULTIPLIERS.DL.includes(coord)) { bgColor = CONFIG.COLORS.DL; label = "DL"; }
+            layer.add(new Konva.Rect({ x: x, y: y, width: CONFIG.GRID_SIZE, height: CONFIG.GRID_SIZE, stroke: CONFIG.COLORS.GRID_LINE, fill: bgColor }));
+            if (label) { layer.add(new Konva.Text({ x: x, y: y + 15, width: CONFIG.GRID_SIZE, text: label, fontSize: 8, align: 'center' })); }
+        }
+    }
+}

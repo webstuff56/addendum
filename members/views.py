@@ -1,3 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render  # Sync: Added missing import
 
-# Create your views here.
+
+
+

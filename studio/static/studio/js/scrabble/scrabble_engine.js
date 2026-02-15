@@ -5,8 +5,8 @@
  */
 
 /* FILE: studio/static/studio/js/scrabble/scrabble_engine.js */
-/* DATE: 2026-02-14 08:00 PM */
-/* SYNC: Fixed nextTurn to not destroy board - temporary solution until we implement proper turn visual update */
+/* DATE: 2026-02-15 09:30 AM */
+/* SYNC: Fixed invisible tile bug - repositions ALL tiles after refill */
 
 let stage, layer;
 
@@ -83,34 +83,45 @@ window.nextTurn = function() {
  * Refill player's rack to 7 tiles
  */
 window.refillRack = function() {
+    console.log('🔧 === REFILL RACK FUNCTION CALLED ===');
+    
     const scale = CONFIG.IS_MOBILE ? CONFIG.STAGE_WIDTH / 800 : 1;
     const rackY = CONFIG.IS_MOBILE ? (CONFIG.STAGE_HEIGHT - 50 * scale) : (707 * scale);
     const startX = 215 * scale;
     const tileSpacing = 42 * scale;
     
-    // Count tiles in rack
-    let tilesInRack = 0;
+    console.log(`🔧 Rack position: x=${startX}, y=${rackY}, spacing=${tileSpacing}`);
+    
+    // Collect all tiles currently in rack
+    let tilesInRack = [];
     layer.find('.tile-group').forEach(tile => {
         if (tile.status === 'in-rack') {
-            tilesInRack++;
+            tilesInRack.push(tile);
+            console.log(`🔧 Found tile in rack: ${tile.findOne('Text').text()}`);
         }
     });
     
-    console.log(`Tiles in rack: ${tilesInRack}, need: ${7 - tilesInRack}`);
+    console.log(`🔧 Tiles in rack: ${tilesInRack.length}, need: ${7 - tilesInRack.length}`);
     
-    // Draw new tiles
-    const needed = 7 - tilesInRack;
+    // Draw new tiles from bag
+    const needed = 7 - tilesInRack.length;
+    console.log(`🔧 === DRAWING ${needed} NEW TILES ===`);
+    
     for (let i = 0; i < needed; i++) {
+        console.log(`🔧 Drawing tile ${i}...`);
+        
         const letter = window.drawTileFromBag();
         if (!letter) {
-            console.log('Tile bag is empty!');
+            console.log('🔧 ❌ Tile bag is empty!');
             break;
         }
         
-        const points = CONFIG.TILE_VALUES[letter] || 0;
-        const xPos = startX + (tilesInRack + i) * tileSpacing;
+        console.log(`🔧 ✓ Drew letter: "${letter}"`);
         
-        let t = createTile(layer, xPos, rackY, letter, points);
+        const points = CONFIG.TILE_VALUES[letter] || 0;
+        
+        // Create tile at temporary position (we'll reposition all tiles after)
+        let t = createTile(layer, 0, 0, letter, points);
         t.status = 'in-rack';
         
         t.on('click tap', (e) => {
@@ -121,9 +132,26 @@ window.refillRack = function() {
             layer.batchDraw();
         });
         
-        // Animate tile popping up
-        animateNewTile(t, rackY, i * 0.1);
+        tilesInRack.push(t);
+        console.log(`🔧 ✓ Created tile: ${letter} (${points} pts)`);
     }
+    
+    console.log(`🔧 === REPOSITIONING ALL ${tilesInRack.length} TILES ===`);
+    
+    // Now reposition ALL tiles in rack (old + new) from left to right
+    tilesInRack.forEach((tile, index) => {
+        const xPos = startX + (index * tileSpacing);
+        console.log(`🔧 Positioning tile ${index} (${tile.findOne('Text').text()}) at x=${xPos}`);
+        
+        tile.position({ x: xPos, y: rackY });
+        
+        // Animate new tiles only (ones that were just created)
+        if (index >= tilesInRack.length - needed) {
+            animateNewTile(tile, rackY, (index - (tilesInRack.length - needed)) * 0.1);
+        }
+    });
+    
+    console.log(`🔧 === REFILL COMPLETE ===`);
     
     layer.batchDraw();
 };

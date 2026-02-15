@@ -1,3 +1,7 @@
+{# FILE: templates/base.html #}
+{# DATE: 2026-02-10 #}
+{# SYNC: Fixed duplicate extra_css block #}
+
 {% load static wagtailcore_tags wagtailuserbar %}
 
 <!DOCTYPE html>
@@ -15,7 +19,6 @@
         </title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        {# Force all links in the live preview panel to be opened in a new tab #}
         {% if request.in_preview_panel %}
         <base target="_blank">
         {% endif %}
@@ -32,10 +35,11 @@
     <body class="{% block body_class %}{% endblock %} bg-cream-50">
         {% wagtailuserbar %}
 
+        {# Standard Content Block #}
         {% block content %}{% endblock %}
 
-        {# Global javascript #}
-      
+        {# NEW: The Escape Hatch for the Studio #}
+        {% block full_width %}{% endblock %}
 
         {% block extra_js %}{% endblock %}
     </body>
