@@ -2,18 +2,85 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" type="text/css" href="{% static 'studio/css/studio.css' %}">
+<link rel="stylesheet" href="{% static 'studio/css/studio.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="text-center">Studio Game Sandbox</h2>
-    <p class="text-center text-muted">Development Mode: Konva Layer Active</p>
+<div class="studio-viewport">
+    <!-- Hamburger Menu Button (Mobile Only) -->
+    <button id="hamburger-btn" class="hamburger-menu" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
 
-    <div id="konva-holder"></div>
+    <!-- Slide-out Menu (Mobile) -->
+    <div id="menu-drawer" class="menu-drawer">
+        <div class="menu-header">
+            <h3>Menu</h3>
+            <button id="close-menu" class="close-btn">&times;</button>
+        </div>
+        <ul class="menu-items">
+            <li><a href="#" id="how-to-play">How to Play</a></li>
+            <li><a href="#" id="game-rules">Game Rules</a></li>
+            <li><a href="#" id="settings">Settings</a></li>
+            <li><a href="/lobby/">Leave Game</a></li>
+        </ul>
+    </div>
+
+    <!-- Chat Icon (Mobile Only) -->
+    <button id="chat-toggle-btn" class="chat-toggle-btn" aria-label="Toggle Chat">
+        💬 <span id="chat-badge" class="chat-badge">0</span>
+    </button>
+
+    <!-- Game Area -->
+    <div class="game-area">
+        <!-- Opponent Info Bar (Mobile Only) -->
+        <div id="opponent-info" class="opponent-info">
+            <span id="opponent-name">Waiting for opponent...</span>
+            <span id="opponent-score">0 pts</span>
+        </div>
+
+        <div id="konva-holder">
+            <!-- Konva stage renders here -->
+        </div>
+    </div>
+
+    <!-- Chat Container (Desktop: sidebar, Mobile: slide-out drawer) -->
+    <div class="chat-container" id="chat-container">
+        <div class="chat-header">
+            <h3>Game Chat</h3>
+            <button class="leave-room-btn desktop-only" onclick="window.location.href='/lobby/'">
+                Leave Room
+            </button>
+            <button id="close-chat" class="close-btn mobile-only">&times;</button>
+        </div>
+
+        <div id="member-status">
+            <h4>Players</h4>
+            <ul id="player-list"></ul>
+        </div>
+
+        <div id="chat-messages"></div>
+
+        <div id="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Type a message...">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <!-- Overlay for drawers (Mobile) -->
+    <div id="drawer-overlay" class="drawer-overlay"></div>
 </div>
 
 <script src="https://unpkg.com/konva@9/konva.min.js"></script>
+<script src="{% static 'studio/js/scrabble/scrabble_settings.js' %}"></script>
+<script src="{% static 'studio/js/scrabble/scrabble_painter.js' %}"></script>
+<script src="{% static 'studio/js/scrabble/scrabble_tile_factory.js' %}"></script>
+<script src="{% static 'studio/js/scrabble/scrabble_stack_manager.js' %}"></script>
+<script src="{% static 'studio/js/scrabble/scrabble_engine.js' %}"></script>
+<script src="{% static 'studio/js/mobile-menu.js' %}"></script>
+<script src="{% static 'studio/js/scrabble/scrabble_toast.js' %}"></script>
+<script src="{% static 'studio/js/scrabble/scrabble_validator.js' %}"></script>
 
-<script src="{% static 'studio/js/studio_engine.js' %}"></script>
 {% endblock %}
