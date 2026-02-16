@@ -1,7 +1,6 @@
 # FILE: studio/urls.py
-# SYNC: 2026-01-31 10:15 AM
-# REASON: Establishing the independent 'studio' route for Konva development sandbox.
-# -------------------------------------------------------------------------------
+# SYNC: 2026-02-15 03:00 PM
+# REASON: Added word validation API endpoint for CHALLENGE button
 
 from django.urls import path
 from . import views
@@ -9,6 +8,6 @@ from . import views
 app_name = 'studio'
 
 urlpatterns = [
-    # Maps http://localhost:8000/studio/
     path('', views.studio_sandbox, name='studio_sandbox'),
+    path('api/validate-word/', views.validate_word, name='validate_word'),
 ]

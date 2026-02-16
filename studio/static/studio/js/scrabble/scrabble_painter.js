@@ -6,8 +6,8 @@
  */
 
 /* FILE: studio/static/studio/js/scrabble/scrabble_painter.js */
-/* DATE: 2026-02-14 06:30 PM */
-/* SYNC: Added SUBMIT button handler with validation */
+/* DATE: 2026-02-15 11:30 AM */
+/* SYNC: Integrated with GameManager - registers UI elements for dynamic updates */
 
 function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
     const scale = CONFIG.IS_MOBILE ? CONFIG.STAGE_WIDTH / 800 : 1;
@@ -20,18 +20,21 @@ function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
     const labels = ['SUBMIT', 'UNDO', 'EXCHANGE', 'PASS'];
     const colors = ['#4CAF50', '#cc0000', '#FF9800', '#9C27B0'];
 
-    const allPlayers = [
-        { name: 'Player 1', turn: 23, total: 145 },
-        { name: 'Player 2', turn: 15, total: 234 },
-        { name: 'Player 3', turn: 8, total: 89 },
-        { name: 'Player 4', turn: 31, total: 287 }
-    ];
+    // Use GameManager players if available, otherwise fallback to hardcoded
+    const allPlayers = window.GameManager ? 
+        window.GameManager.getAllPlayers() : 
+        [
+            { name: 'Player 1', score: 0 },
+            { name: 'Player 2', score: 0 },
+            { name: 'Player 3', score: 0 },
+            { name: 'Player 4', score: 0 }
+        ];
 
     const viewOrder = [
-        (currentPlayerIndex + 2) % 4,
-        currentPlayerIndex,
-        (currentPlayerIndex + 1) % 4,
-        (currentPlayerIndex + 3) % 4
+        (currentPlayerIndex + 2) % 4,  // top
+        currentPlayerIndex,             // bottom (YOU)
+        (currentPlayerIndex + 1) % 4,   // left
+        (currentPlayerIndex + 3) % 4    // right
     ];
     const players = viewOrder.map(idx => allPlayers[idx]);
 
@@ -47,7 +50,7 @@ function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
         });
     }
 
-    function drawAutoNameBox(groupX, groupY, name, rotation, font, isActivePlayer, rightAlign = false, bottomAlign = false) {
+    function drawAutoNameBox(groupX, groupY, name, rotation, font, isActivePlayer, rightAlign = false, bottomAlign = false, viewIndex = -1) {
         const group = new Konva.Group({ x: groupX * scale, y: groupY * scale });
         const txt = new Konva.Text({
             text: name,
@@ -103,6 +106,13 @@ function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
         group.add(rect);
         group.add(txt);
         layer.add(group);
+        
+        // Register with GameManager
+        if (viewIndex >= 0 && window.GameManager) {
+            window.GameManager.registerPlayerUI(viewIndex, rect, null);
+        }
+        
+        return { rect, group };
     }
 
     // ========== TOP SECTION (HIDDEN ON MOBILE) ==========
@@ -122,12 +132,24 @@ function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
         }
         layer.add(topControlGroup);
 
-        drawAutoNameBox(608, 52, players[0].name, 180, 'Playwrite IN Guides', currentTurn === 0, false, false);
+        const topActivePlayer = viewOrder.indexOf(currentTurn) === 0;
+        drawAutoNameBox(608, 52, players[0].name, 180, 'Playwrite IN Guides', topActivePlayer, false, false, 0);
         
         const topScoreBox = new Konva.Group({ x: 98 * scale, y: 52 * scale, name: 'opponent-scoreboard' });
         topScoreBox.add(new Konva.Rect({ width: 94 * scale, height: 40 * scale, fill: 'white', stroke: CONFIG.COLORS.RACK_STROKE, strokeWidth: 2 }));
-        topScoreBox.add(new Konva.Text({ text: `Turn: ${players[0].turn}\nTotal: ${players[0].total}`, fontSize: 16 * scale, fill: 'black', fontFamily: 'Open Sans', width: 94 * scale, height: 40 * scale, align: 'center', verticalAlign: 'middle', rotation: 180, x: 42 * scale, y: 20 * scale, offsetX: 47 * scale, offsetY: 20 * scale }));
+        const topScoreText = new Konva.Text({ 
+            text: `Turn: 0\nTotal: ${players[0].score}`, 
+            fontSize: 16 * scale, fill: 'black', fontFamily: 'Open Sans', 
+            width: 94 * scale, height: 40 * scale, align: 'center', verticalAlign: 'middle', 
+            rotation: 180, x: 42 * scale, y: 20 * scale, offsetX: 47 * scale, offsetY: 20 * scale 
+        });
+        topScoreBox.add(topScoreText);
         layer.add(topScoreBox);
+        
+        // Register score text with GameManager
+        if (window.GameManager) {
+            window.GameManager.scoreTexts[0] = topScoreText;
+        }
     }
 
     // ========== BOTTOM SECTION (ALWAYS VISIBLE - YOUR RACK) ==========
@@ -186,17 +208,36 @@ function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
                     layer.batchDraw();
                 }
             });
+        } else if (i === 3) { // PASS
+            btn.on('click tap', () => {
+                console.log('PASS clicked!');
+                if (window.GameManager) {
+                    window.GameManager.nextTurn();
+                    window.showToast('Turn passed', 'info', 2000);
+                }
+            });
         }
         
         layer.add(btn);
     }
     
-    drawAutoNameBox(192, CONFIG.IS_MOBILE ? bottomRackY / scale : 708, players[1].name, 0, 'Playwrite IN Guides', currentTurn === 1, true, false);
+    const bottomActivePlayer = viewOrder.indexOf(currentTurn) === 1;
+    drawAutoNameBox(192, CONFIG.IS_MOBILE ? bottomRackY / scale : 708, players[1].name, 0, 'Playwrite IN Guides', bottomActivePlayer, true, false, 1);
     
     const bottomScoreBox = new Konva.Group({ x: 608 * scale, y: bottomRackY });
     bottomScoreBox.add(new Konva.Rect({ width: 94 * scale, height: 40 * scale, fill: 'white', stroke: CONFIG.COLORS.RACK_STROKE, strokeWidth: 2 }));
-    bottomScoreBox.add(new Konva.Text({ text: `Turn: ${players[1].turn}\nTotal: ${players[1].total}`, fontSize: 16 * scale, fill: 'black', fontFamily: 'Open Sans', width: 94 * scale, height: 40 * scale, align: 'center', verticalAlign: 'middle' }));
+    const bottomScoreText = new Konva.Text({ 
+        text: `Turn: 0\nTotal: ${players[1].score}`, 
+        fontSize: 16 * scale, fill: 'black', fontFamily: 'Open Sans', 
+        width: 94 * scale, height: 40 * scale, align: 'center', verticalAlign: 'middle' 
+    });
+    bottomScoreBox.add(bottomScoreText);
     layer.add(bottomScoreBox);
+    
+    // Register score text
+    if (window.GameManager) {
+        window.GameManager.scoreTexts[1] = bottomScoreText;
+    }
 
     // ========== LEFT SECTION (HIDDEN ON MOBILE) ==========
     if (!CONFIG.IS_MOBILE) {
@@ -213,12 +254,23 @@ function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
             layer.add(btn);
         }
         
-        drawAutoNameBox(52, 192, players[2].name, 90, 'Playwrite IN Guides', currentTurn === 2, false, true);
+        const leftActivePlayer = viewOrder.indexOf(currentTurn) === 2;
+        drawAutoNameBox(52, 192, players[2].name, 90, 'Playwrite IN Guides', leftActivePlayer, false, true, 2);
         
         const leftScoreBox = new Konva.Group({ x: 52 * scale, y: 608 * scale, name: 'opponent-scoreboard' });
         leftScoreBox.add(new Konva.Rect({ width: 40 * scale, height: 94 * scale, fill: 'white', stroke: CONFIG.COLORS.RACK_STROKE, strokeWidth: 2 }));
-        leftScoreBox.add(new Konva.Text({ text: `Turn: ${players[2].turn}\nTotal: ${players[2].total}`, fontSize: 16 * scale, fill: 'black', fontFamily: 'Open Sans', width: 94 * scale, height: 40 * scale, align: 'center', verticalAlign: 'middle', rotation: 90, x: 60 * scale, y: 50 * scale, offsetX: 47 * scale, offsetY: -20 * scale }));
+        const leftScoreText = new Konva.Text({ 
+            text: `Turn: 0\nTotal: ${players[2].score}`, 
+            fontSize: 16 * scale, fill: 'black', fontFamily: 'Open Sans', 
+            width: 94 * scale, height: 40 * scale, align: 'center', verticalAlign: 'middle', 
+            rotation: 90, x: 60 * scale, y: 50 * scale, offsetX: 47 * scale, offsetY: -20 * scale 
+        });
+        leftScoreBox.add(leftScoreText);
         layer.add(leftScoreBox);
+        
+        if (window.GameManager) {
+            window.GameManager.scoreTexts[2] = leftScoreText;
+        }
     }
 
     // ========== RIGHT SECTION (HIDDEN ON MOBILE) ==========
@@ -236,12 +288,23 @@ function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
             layer.add(btn);
         }
         
-        drawAutoNameBox(708, 608, players[3].name, 270, 'Playwrite IN Guides', currentTurn === 3, false, false);
+        const rightActivePlayer = viewOrder.indexOf(currentTurn) === 3;
+        drawAutoNameBox(708, 608, players[3].name, 270, 'Playwrite IN Guides', rightActivePlayer, false, false, 3);
         
         const rightScoreBox = new Konva.Group({ x: 708 * scale, y: 104 * scale, name: 'opponent-scoreboard' });
         rightScoreBox.add(new Konva.Rect({ width: 40 * scale, height: 94 * scale, fill: 'white', stroke: CONFIG.COLORS.RACK_STROKE, strokeWidth: 2 }));
-        rightScoreBox.add(new Konva.Text({ text: `Turn: ${players[3].turn}\nTotal: ${players[3].total}`, fontSize: 16 * scale, fill: 'black', fontFamily: 'Open Sans', width: 94 * scale, height: 40 * scale, align: 'center', verticalAlign: 'middle', rotation: 270, x: 20 * scale, y: 54 * scale, offsetX: 47 * scale, offsetY: 20 * scale }));
+        const rightScoreText = new Konva.Text({ 
+            text: `Turn: 0\nTotal: ${players[3].score}`, 
+            fontSize: 16 * scale, fill: 'black', fontFamily: 'Open Sans', 
+            width: 94 * scale, height: 40 * scale, align: 'center', verticalAlign: 'middle', 
+            rotation: 270, x: 20 * scale, y: 54 * scale, offsetX: 47 * scale, offsetY: 20 * scale 
+        });
+        rightScoreBox.add(rightScoreText);
         layer.add(rightScoreBox);
+        
+        if (window.GameManager) {
+            window.GameManager.scoreTexts[3] = rightScoreText;
+        }
     }
 
     // ========== GRID RENDERING WITH CENTER STAR ==========

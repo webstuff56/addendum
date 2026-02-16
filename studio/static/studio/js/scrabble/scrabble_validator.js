@@ -1,20 +1,17 @@
 /* 
- * FILE PURPOSE: Move Validation & Scoring Engine
- * Validates tile placements, calculates scores with multipliers,
- * and enforces Scrabble rules (straight lines, connections, center star).
+ * FILE PURPOSE: Word Validation & Scoring
+ * Validates tile placement, checks game rules, and calculates scores with multipliers.
  */
 
 /* FILE: studio/static/studio/js/scrabble/scrabble_validator.js */
-/* DATE: 2026-02-14 06:00 PM */
-/* SYNC: Initial validation and scoring system */
+/* DATE: 2026-02-15 02:00 PM */
+/* SYNC: Added multiplier support (DW, TW, DL, TL) to score calculation */
 
-// Track first move status
+// Track if this is the first move of the game
 let isFirstMove = true;
 
 /**
- * Find all tiles placed this turn
- * @param {Konva.Layer} layer - The game layer
- * @returns {Array} - Array of newly placed tiles
+ * Get newly placed tiles (status = 'played-this-turn')
  */
 function getNewlyPlacedTiles(layer) {
     const tiles = [];
@@ -28,18 +25,12 @@ function getNewlyPlacedTiles(layer) {
 
 /**
  * Get tile at specific grid position
- * @param {Konva.Layer} layer - The game layer
- * @param {number} gridX - Grid X coordinate
- * @param {number} gridY - Grid Y coordinate
- * @returns {Object|null} - Tile object or null
  */
 function getTileAt(layer, gridX, gridY) {
-    const targetX = (gridX * CONFIG.GRID_SIZE) + CONFIG.BOARD_X_OFFSET + 1;
-    const targetY = (gridY * CONFIG.GRID_SIZE) + CONFIG.BOARD_Y_OFFSET + 1;
-    
     let foundTile = null;
     layer.find('.tile-group').forEach(tile => {
-        if (Math.abs(tile.x() - targetX) < 5 && Math.abs(tile.y() - targetY) < 5) {
+        const tileGridPos = pixelToGrid(tile.x(), tile.y());
+        if (tileGridPos.gridX === gridX && tileGridPos.gridY === gridY) {
             foundTile = tile;
         }
     });
@@ -47,118 +38,193 @@ function getTileAt(layer, gridX, gridY) {
 }
 
 /**
- * Convert pixel position to grid coordinates
- * @param {number} x - Pixel X
- * @param {number} y - Pixel Y
- * @returns {Object} - {gridX, gridY}
+ * Convert pixel coordinates to grid coordinates
  */
 function pixelToGrid(x, y) {
-    return {
-        gridX: Math.floor((x - CONFIG.BOARD_X_OFFSET) / CONFIG.GRID_SIZE),
-        gridY: Math.floor((y - CONFIG.BOARD_Y_OFFSET) / CONFIG.GRID_SIZE)
-    };
+    const gridX = Math.floor((x - CONFIG.BOARD_X_OFFSET) / CONFIG.GRID_SIZE);
+    const gridY = Math.floor((y - CONFIG.BOARD_Y_OFFSET) / CONFIG.GRID_SIZE);
+    return { gridX, gridY };
 }
 
 /**
- * Validate SUBMIT - check placement rules
- * @param {Konva.Layer} layer - The game layer
- * @returns {Object} - {valid: boolean, error: string, score: number}
+ * Check if a coordinate string matches any multiplier
+ */
+function getMultiplierType(gridX, gridY) {
+    const coord = `${gridX},${gridY}`;
+    
+    if (CONFIG.MULTIPLIERS.TW.includes(coord)) return 'TW';
+    if (CONFIG.MULTIPLIERS.DW.includes(coord)) return 'DW';
+    if (CONFIG.MULTIPLIERS.TL.includes(coord)) return 'TL';
+    if (CONFIG.MULTIPLIERS.DL.includes(coord)) return 'DL';
+    
+    return null;
+}
+
+/**
+ * Validate and score the current move
  */
 window.validateSubmit = function(layer) {
     const newTiles = getNewlyPlacedTiles(layer);
     
-    // No tiles placed
+    // Rule 1: Must place at least one tile
     if (newTiles.length === 0) {
-        return { valid: false, error: 'No tiles placed!' };
+        return { valid: false, error: 'No tiles placed!', score: 0 };
     }
     
-    // Get grid positions
+    // Convert to grid positions
     const positions = newTiles.map(tile => {
         const pos = pixelToGrid(tile.x(), tile.y());
-        return { tile, ...pos };
+        const letter = tile.findOne('Text').text();
+        const points = CONFIG.TILE_VALUES[letter] || 0;
+        return { ...pos, tile, letter, points };
     });
     
-    // Check if first move
+    // Rule 2: First move must touch center (7,7)
     if (isFirstMove) {
         const touchesCenter = positions.some(p => p.gridX === 7 && p.gridY === 7);
         if (!touchesCenter) {
-            return { valid: false, error: 'First word must cover the center star!' };
+            return { valid: false, error: 'First word must cover the center star!', score: 0 };
         }
     }
     
-    // Check if tiles are in a straight line
+    // Rule 3: All tiles must be in same row OR same column
     const allSameRow = positions.every(p => p.gridY === positions[0].gridY);
     const allSameCol = positions.every(p => p.gridX === positions[0].gridX);
     
     if (!allSameRow && !allSameCol) {
-        return { valid: false, error: 'Tiles must be in a straight line!' };
+        return { valid: false, error: 'Tiles must be in a straight line!', score: 0 };
     }
     
-    // Check for gaps
-    if (allSameRow) {
-        const row = positions[0].gridY;
-        const xCoords = positions.map(p => p.gridX).sort((a, b) => a - b);
-        for (let x = xCoords[0]; x <= xCoords[xCoords.length - 1]; x++) {
-            const tileHere = getTileAt(layer, x, row);
-            if (!tileHere) {
-                return { valid: false, error: 'No gaps allowed in your word!' };
-            }
-        }
-    } else {
-        const col = positions[0].gridX;
-        const yCoords = positions.map(p => p.gridY).sort((a, b) => a - b);
-        for (let y = yCoords[0]; y <= yCoords[yCoords.length - 1]; y++) {
-            const tileHere = getTileAt(layer, col, y);
-            if (!tileHere) {
-                return { valid: false, error: 'No gaps allowed in your word!' };
-            }
-        }
-    }
-    
-    // Check if connects to existing words (skip for first move)
-    if (!isFirstMove) {
-        const hasConnection = positions.some(p => {
-            // Check adjacent cells for existing tiles
-            const adjacent = [
-                getTileAt(layer, p.gridX - 1, p.gridY),
-                getTileAt(layer, p.gridX + 1, p.gridY),
-                getTileAt(layer, p.gridX, p.gridY - 1),
-                getTileAt(layer, p.gridX, p.gridY + 1)
-            ];
-            return adjacent.some(t => t && t.status === 'locked');
-        });
-        
-        if (!hasConnection) {
-            return { valid: false, error: 'New tiles must connect to existing words!' };
-        }
-    }
-    
-    // Calculate score (simplified for now - just letter values)
-    let score = 0;
-    newTiles.forEach(tile => {
-        const letter = tile.findOne('Text').text();
-        score += CONFIG.TILE_VALUES[letter] || 0;
+    // Sort positions (left-to-right or top-to-bottom)
+    positions.sort((a, b) => {
+        if (allSameRow) return a.gridX - b.gridX;
+        return a.gridY - b.gridY;
     });
     
-    // Bonus for using all 7 tiles
-    if (newTiles.length === 7) {
-        score += 50;
+    // Rule 4: No gaps allowed
+    for (let i = 0; i < positions.length - 1; i++) {
+        const current = positions[i];
+        const next = positions[i + 1];
+        
+        if (allSameRow) {
+            // Check for gaps in horizontal word
+            const expectedNextX = current.gridX + 1;
+            if (next.gridX !== expectedNextX) {
+                // Check if gap is filled by existing tile
+                let hasGap = true;
+                for (let x = expectedNextX; x < next.gridX; x++) {
+                    const existingTile = getTileAt(layer, x, current.gridY);
+                    if (!existingTile || existingTile.status === 'played-this-turn') {
+                        hasGap = true;
+                        break;
+                    }
+                    hasGap = false;
+                }
+                if (hasGap) {
+                    return { valid: false, error: 'No gaps allowed in your word!', score: 0 };
+                }
+            }
+        } else {
+            // Check for gaps in vertical word
+            const expectedNextY = current.gridY + 1;
+            if (next.gridY !== expectedNextY) {
+                let hasGap = true;
+                for (let y = expectedNextY; y < next.gridY; y++) {
+                    const existingTile = getTileAt(layer, current.gridX, y);
+                    if (!existingTile || existingTile.status === 'played-this-turn') {
+                        hasGap = true;
+                        break;
+                    }
+                    hasGap = false;
+                }
+                if (hasGap) {
+                    return { valid: false, error: 'No gaps allowed in your word!', score: 0 };
+                }
+            }
+        }
     }
     
-    return { valid: true, score };
+    // Rule 5: Must connect to existing words (skip for first move)
+    if (!isFirstMove) {
+        let connects = false;
+        
+        for (const pos of positions) {
+            // Check all 4 directions for existing tiles
+            const neighbors = [
+                getTileAt(layer, pos.gridX - 1, pos.gridY),
+                getTileAt(layer, pos.gridX + 1, pos.gridY),
+                getTileAt(layer, pos.gridX, pos.gridY - 1),
+                getTileAt(layer, pos.gridX, pos.gridY + 1)
+            ];
+            
+            // If any neighbor is locked (from previous turn), we connect
+            if (neighbors.some(n => n && n.status === 'locked')) {
+                connects = true;
+                break;
+            }
+        }
+        
+        if (!connects) {
+            return { valid: false, error: 'New tiles must connect to existing words!', score: 0 };
+        }
+    }
+    
+    // Calculate score with multipliers
+    let baseScore = 0;
+    let wordMultiplier = 1;
+    
+    for (const pos of positions) {
+        let letterScore = pos.points;
+        
+        // Check if this tile is on a multiplier (only count for newly placed tiles)
+        const multiplier = getMultiplierType(pos.gridX, pos.gridY);
+        
+        if (multiplier === 'DL') {
+            letterScore *= 2;
+            console.log(`Double Letter on ${pos.letter}: ${pos.points} × 2 = ${letterScore}`);
+        } else if (multiplier === 'TL') {
+            letterScore *= 3;
+            console.log(`Triple Letter on ${pos.letter}: ${pos.points} × 3 = ${letterScore}`);
+        } else if (multiplier === 'DW') {
+            wordMultiplier *= 2;
+            console.log(`Double Word multiplier found`);
+        } else if (multiplier === 'TW') {
+            wordMultiplier *= 3;
+            console.log(`Triple Word multiplier found`);
+        }
+        
+        baseScore += letterScore;
+    }
+    
+    // Apply word multipliers
+    let totalScore = baseScore * wordMultiplier;
+    
+    console.log(`Base score: ${baseScore}, Word multiplier: ${wordMultiplier}x, Total: ${totalScore}`);
+    
+    // Bingo bonus: Using all 7 tiles = +50 points
+    if (newTiles.length === 7) {
+        totalScore += 50;
+        console.log('BINGO! +50 bonus');
+    }
+    
+    return { valid: true, error: null, score: totalScore };
 };
 
 /**
- * Lock tiles on board (after successful SUBMIT)
- * @param {Konva.Layer} layer - The game layer
+ * Lock tiles on board (change status from 'played-this-turn' to 'locked')
  */
 window.lockTilesOnBoard = function(layer) {
     layer.find('.tile-group').forEach(tile => {
         if (tile.status === 'played-this-turn') {
             tile.status = 'locked';
-            // Make tile non-selectable
+            
+            // Remove click handlers so locked tiles can't be moved
             tile.off('click tap');
+            
+            console.log(`Locked tile: ${tile.findOne('Text').text()}`);
         }
     });
+    
+    // Mark that first move is complete
     isFirstMove = false;
 };

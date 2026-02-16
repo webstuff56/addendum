@@ -5,8 +5,8 @@
  */
 
 /* FILE: studio/static/studio/js/scrabble/scrabble_stack_manager.js */
-/* DATE: 2026-02-15 07:30 AM */
-/* SYNC: Complete file with all functions */
+/* DATE: 2026-02-15 11:30 AM */
+/* SYNC: Integrated with GameManager for score updates and turn cycling */
 
 let moveHistory = [];
 let selectedTile = null;
@@ -140,8 +140,10 @@ window.handleSubmit = function(layer) {
     // Valid move!
     console.log('Valid move! Score:', result.score);
     
-    // Update player score
-    window.updatePlayerScore(gameState.currentTurn, result.score);
+    // Update score via GameManager
+    if (window.GameManager) {
+        window.GameManager.updateScore(result.score);
+    }
     
     // Lock tiles on board
     window.lockTilesOnBoard(layer);
@@ -157,7 +159,9 @@ window.handleSubmit = function(layer) {
     
     // Next turn after 1 second delay
     setTimeout(() => {
-        window.nextTurn();
+        if (window.GameManager) {
+            window.GameManager.nextTurn();
+        }
         submitting = false;
     }, 1000);
     
@@ -223,6 +227,14 @@ window.handleExchange = function(layer) {
         tilesMarkedForExchange = [];
         exchangeMode = false;
         layer.batchDraw();
+        
+        // Exchange costs a turn
+        if (window.GameManager) {
+            setTimeout(() => {
+                window.GameManager.nextTurn();
+                window.showToast('Tiles exchanged - turn passed', 'info', 2000);
+            }, 500);
+        }
         
         console.log('=== EXCHANGE COMPLETE ===');
         return false;
