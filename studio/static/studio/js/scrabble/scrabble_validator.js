@@ -4,11 +4,19 @@
  */
 
 /* FILE: studio/static/studio/js/scrabble/scrabble_validator.js */
-/* DATE: 2026-02-15 02:00 PM */
-/* SYNC: Added multiplier support (DW, TW, DL, TL) to score calculation */
+/* DATE: 2026-02-17 10:30 AM */
+/* SYNC: Added resetToFirstMove() function for when board becomes empty after challenge */
 
 // Track if this is the first move of the game
 let isFirstMove = true;
+
+/**
+ * Reset to first move state (used when challenge clears the board)
+ */
+window.resetToFirstMove = function() {
+    isFirstMove = true;
+    console.log('Board reset to first move state');
+};
 
 /**
  * Get newly placed tiles (status = 'played-this-turn')

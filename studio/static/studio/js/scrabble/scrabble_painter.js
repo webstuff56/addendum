@@ -6,8 +6,8 @@
  */
 
 /* FILE: studio/static/studio/js/scrabble/scrabble_painter.js */
-/* DATE: 2026-02-15 11:30 AM */
-/* SYNC: Integrated with GameManager - registers UI elements for dynamic updates */
+/* DATE: 2026-02-17 12:00 PM */
+/* SYNC: Removed CHALLENGE button - auto-validation on SUBMIT instead */
 
 function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
     const scale = CONFIG.IS_MOBILE ? CONFIG.STAGE_WIDTH / 800 : 1;
@@ -31,10 +31,10 @@ function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
         ];
 
     const viewOrder = [
-        (currentPlayerIndex + 2) % 4,  // top
-        currentPlayerIndex,             // bottom (YOU)
-        (currentPlayerIndex + 1) % 4,   // left
-        (currentPlayerIndex + 3) % 4    // right
+        (currentPlayerIndex + 2) % 4,
+        currentPlayerIndex,
+        (currentPlayerIndex + 1) % 4,
+        (currentPlayerIndex + 3) % 4
     ];
     const players = viewOrder.map(idx => allPlayers[idx]);
 
@@ -65,7 +65,6 @@ function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
         const w = txt.width();
         const h = txt.height();
         
-        // Glow effect if it's this player's turn
         const rect = new Konva.Rect({
             width: w, height: h,
             fill: 'white', 
@@ -107,7 +106,6 @@ function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
         group.add(txt);
         layer.add(group);
         
-        // Register with GameManager
         if (viewIndex >= 0 && window.GameManager) {
             window.GameManager.registerPlayerUI(viewIndex, rect, null);
         }
@@ -146,7 +144,6 @@ function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
         topScoreBox.add(topScoreText);
         layer.add(topScoreBox);
         
-        // Register score text with GameManager
         if (window.GameManager) {
             window.GameManager.scoreTexts[0] = topScoreText;
         }
@@ -172,7 +169,14 @@ function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
             shadowOffset: { x: 0, y: 2 },
             shadowOpacity: 0.3
         });
-        const btnText = new Konva.Text({ text: labels[i], fontSize: 11 * scale, fill: 'white', width: buttonWidth, padding: 10 * scale, align: 'center' });
+        const btnText = new Konva.Text({ 
+            text: labels[i], 
+            fontSize: 11 * scale,
+            fill: 'white', 
+            width: buttonWidth, 
+            padding: 10 * scale, 
+            align: 'center' 
+        });
         
         btn.add(btnRect);
         btn.add(btnText);
@@ -234,7 +238,6 @@ function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
     bottomScoreBox.add(bottomScoreText);
     layer.add(bottomScoreBox);
     
-    // Register score text
     if (window.GameManager) {
         window.GameManager.scoreTexts[1] = bottomScoreText;
     }
@@ -250,7 +253,20 @@ function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
         for (let i = 0; i < 4; i++) {
             const btn = new Konva.Group({ x: 12 * scale, y: (214 + (i * 80)) * scale, name: 'opponent-controls' });
             btn.add(new Konva.Rect({ width: 30 * scale, height: 70 * scale, fill: colors[i], cornerRadius: 5 }));
-            btn.add(new Konva.Text({ text: labels[i], fontSize: 10 * scale, fill: 'white', width: 70 * scale, height: 30 * scale, rotation: 90, x: 15 * scale, y: 35 * scale, offsetX: 35 * scale, offsetY: 15 * scale, align: 'center', verticalAlign: 'middle' }));
+            btn.add(new Konva.Text({ 
+                text: labels[i], 
+                fontSize: 10 * scale,
+                fill: 'white', 
+                width: 70 * scale, 
+                height: 30 * scale, 
+                rotation: 90, 
+                x: 15 * scale, 
+                y: 35 * scale, 
+                offsetX: 35 * scale, 
+                offsetY: 15 * scale, 
+                align: 'center', 
+                verticalAlign: 'middle' 
+            }));
             layer.add(btn);
         }
         
@@ -284,7 +300,20 @@ function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
         for (let i = 0; i < 4; i++) {
             const btn = new Konva.Group({ x: 758 * scale, y: (228 + (i * 80)) * scale, name: 'opponent-controls' });
             btn.add(new Konva.Rect({ width: 30 * scale, height: 70 * scale, fill: colors[i], cornerRadius: 5 }));
-            btn.add(new Konva.Text({ text: labels[i], fontSize: 10 * scale, fill: 'white', width: 70 * scale, height: 30 * scale, rotation: 270, x: 15 * scale, y: 35 * scale, offsetX: 35 * scale, offsetY: 15 * scale, align: 'center', verticalAlign: 'middle' }));
+            btn.add(new Konva.Text({ 
+                text: labels[i], 
+                fontSize: 10 * scale,
+                fill: 'white', 
+                width: 70 * scale, 
+                height: 30 * scale, 
+                rotation: 270, 
+                x: 15 * scale, 
+                y: 35 * scale, 
+                offsetX: 35 * scale, 
+                offsetY: 15 * scale, 
+                align: 'center', 
+                verticalAlign: 'middle' 
+            }));
             layer.add(btn);
         }
         
@@ -316,9 +345,8 @@ function paintBoard(layer, currentPlayerIndex = 1, currentTurn = 1) {
             let bgColor = CONFIG.COLORS.DEFAULT_CELL;
             let label = "";
             
-            // Center star (7,7)
             if (i === 7 && j === 7) {
-                bgColor = '#FFD700'; // Gold center
+                bgColor = '#FFD700';
                 label = "★";
             } else if (CONFIG.MULTIPLIERS.TW.includes(coord)) { 
                 bgColor = CONFIG.COLORS.TW; label = "TW"; 
